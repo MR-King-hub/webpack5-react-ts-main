@@ -63,6 +63,7 @@
     "webpack-merge": "^5.8.0"
   },
   "dependencies": {
+    "@cloudbase/weda-client": "1.1.23",
     "block": "file:src/weda",
     "buffer": "^6.0.3",
     "node-polyfill-webpack-plugin": "^4.1.0",

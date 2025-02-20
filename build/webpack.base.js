@@ -37,7 +37,7 @@ module.exports = {
       {
         test: /\.less$/, //匹配所有的 less 文件
         enforce: 'pre',
-        include: [path.resolve(__dirname, '../src')],
+        include: [path.resolve(__dirname, '../src'),path.resolve(__dirname, '../node_modules/block')],
         use: [
           isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
           'css-loader',

@@ -2,7 +2,6 @@
   "name": "block",
   "version": "1.0.0",
   "main": "src/index.js",
-
   "scripts": {
     "build": "webpack",
     "build:babel": "babel src --out-dir dist"
@@ -11,7 +10,7 @@
     "dist/**/*"
   ],
   "dependencies": {
-    "@cloudbase/lowcode-render": "1.1.5","@cloudbase/weda-ui": "3.14.2",
+    "@cloudbase/lowcode-render": "^1.1.10","@cloudbase/weda-ui": "3.13.7",
     "react": "^16.14.0",
     "react-dom": "^16.14.0"
   },

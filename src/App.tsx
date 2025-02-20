@@ -1,16 +1,26 @@
-import React, { lazy, Suspense, useState } from 'react'
+import React, { lazy, Suspense, useState,useRef } from 'react'
 import './app.less'
 // @ts-ignore
-import {Index} from 'block';
+import {AgentUi} from 'block';
 
-// prefetch
+import * as wedaClient from "@cloudbase/weda-client";
+
+wedaClient.app.init({
+  /** 当前是否处于正式发布模式 */
+  isProd: true,
+  /** 低码应用ID */
+  /** 云开发环境ID */
+  envId: "TODO REPLACE YOUR OWN ENVID",
+});
+
 
 function App() {
   const [ show, setShow ] = useState(false)
+  const myComponentRef = useRef();
 
   return (
     <>
-      <Index></Index>
+      <AgentUi ref={myComponentRef} bot={{botId:'bot-f3c6bedc'}}></AgentUi>
     </>
   )
 }

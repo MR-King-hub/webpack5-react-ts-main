@@ -1,1 +1,1 @@
-export { default as Index } from './Index/index'
+export { default as AgentUi } from './AgentUi'
