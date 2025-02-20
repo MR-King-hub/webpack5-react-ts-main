@@ -1,5 +1,5 @@
 {
-  "name": "webpack5-react-ts",
+  "name": "weda-agent",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -12,10 +12,6 @@
     "build:pre": "cross-env NODE_ENV=production BASE_ENV=pre webpack -c build/webpack.prod.js",
     "build:prod": "cross-env NODE_ENV=production BASE_ENV=production webpack -c build/webpack.prod.js",
     "analy": "cross-env NODE_ENV=production BASE_ENV=production webpack -c build/webpack.analy.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/guojiongwei/webpack5-react-ts.git"
   },
   "keywords": [],
   "author": "",

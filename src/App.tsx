@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useState,useRef } from 'react'
+import React, {useRef } from 'react'
 import './app.less'
 // @ts-ignore
 import {AgentUi} from 'block';
@@ -15,7 +15,6 @@ wedaClient.app.init({
 
 
 function App() {
-  const [ show, setShow ] = useState(false)
   const myComponentRef = useRef();
 
   return (

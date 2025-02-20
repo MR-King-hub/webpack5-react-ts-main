@@ -1,4 +1,3 @@
-// webpack.base.js
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
@@ -8,14 +7,11 @@ const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 const isDev = process.env.NODE_ENV === 'development'
 
 module.exports = {
-  // 入口文件
   entry: path.resolve(__dirname, '../src/index.tsx'),
-  // 打包文件出口
   output: {
-    filename: 'static/js/[name].[chunkhash:8].js', // 每个输出js的名称
-    path: path.resolve(__dirname, '../dist'), // 打包的出口文件夹路径
-    clean: true, // webpack4需要配置clean-webpack-plugin删除dist文件，webpack5内置了。
-    publicPath: '/', // 打包后文件的公共前缀路径
+    filename: 'static/js/[name].[chunkhash:8].js', 
+    path: path.resolve(__dirname, '../dist'),
+    publicPath: isDev?'/':'./', 
   },
   stats: {
     all: false,
@@ -26,18 +22,27 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.css$/, //匹配所有的 less 文件
-        enforce: 'pre',
-        use: [
+        test: /\.css$/, 
+        // 云开发 @cloudbase 依赖单独处理
+        oneOf: [
+          {
+            include: /node_modules\/@cloudbase/,
+            use: [
+              'style-loader',
+              'css-loader',
+              'postcss-loader',
+            ],
+          },
+        {use: [
           isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
           'css-loader',
           'postcss-loader',
-        ]
+        ]}]
       },
       {
-        test: /\.less$/, //匹配所有的 less 文件
+        test: /\.less$/, 
         enforce: 'pre',
-        include: [path.resolve(__dirname, '../src'),path.resolve(__dirname, '../node_modules/block')],
+        include: [path.resolve(__dirname, '../src'),path.resolve(__dirname, '../node_modules/block/src')],
         use: [
           isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
           'css-loader',
@@ -46,12 +51,12 @@ module.exports = {
         ]
       },
       {
-        test: /\.(scss|sass)$/, //匹配所有的 less 文件
+        test: /\.(scss|sass)$/, 
         use: ["style-loader", "css-loader", "postcss-loader", "sass-loader"]
       },
       {
         test: /\.(jsx)$/,
-        include: [path.resolve(__dirname, '../src'),path.resolve(__dirname, '../node_modules/block')],
+        include: [path.resolve(__dirname, '../src'),path.resolve(__dirname, '../node_modules/block/src')],
         use: [ 'babel-loader']
       },
       {
@@ -60,43 +65,9 @@ module.exports = {
         enforce: 'pre',
         use: ['thread-loader', 'babel-loader']
       },
-      {
-        test:/\.(png|jpg|jpeg|gif|svg)$/,
-        type: "asset",
-        parser: {
-          //转base64的条件
-          dataUrlCondition: {
-            maxSize: 10 * 1024, // 10kb
-          }
-        },
-        generator:{ 
-          filename:'static/images/[name].[contenthash:6][ext]'
-        },
-      },
-      {
-        test:/\.(woff2?|eot|ttf|otf)$/, // 匹配字体图标文件
-        type: "asset", // type选择asset
-        parser: {
-          dataUrlCondition: {
-            maxSize: 10 * 1024, // 小于10kb转base64位
-          }
-        },
-        generator:{ 
-          filename:'static/fonts/[name].[contenthash:6][ext]', // 文件输出目录和命名
-        },
-      },
-      {
-        test:/\.(mp4|webm|ogg|mp3|wav|flac|aac)$/, // 匹配媒体文件
-        type: "asset", // type选择asset
-        parser: {
-          dataUrlCondition: {
-            maxSize: 10 * 1024, // 小于10kb转base64位
-          }
-        },
-        generator:{ 
-          filename:'static/media/[name].[contenthash:6][ext]', // 文件输出目录和命名
-        },
-      }
+      createAssetRule(/\.(png|jpg|jpeg|gif|svg)$/, 'static/images'),
+      createAssetRule(/\.(woff2?|eot|ttf|otf)$/, 'static/fonts'),
+      createAssetRule(/\.(mp4|webm|ogg|mp3|wav|flac|aac)$/, 'static/media'),
     ]
   },
   resolve: {
@@ -128,8 +99,17 @@ module.exports = {
       process: 'process/browser',
     }),
   ],
-  // 开启webpack持久化存储缓存
-  cache: {
-    type: 'filesystem', // 使用文件缓存
-  },
 }
+
+const createAssetRule = (test, outputPath) => ({
+  test,
+  type: 'asset',
+  parser: {
+    dataUrlCondition: {
+      maxSize: 10 * 1024, // 10 KB
+    },
+  },
+  generator: {
+    filename: `${outputPath}/[name].[contenthash:6][ext]`,
+  },
+});
